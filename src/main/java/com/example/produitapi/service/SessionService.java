@@ -3,11 +3,12 @@ package com.example.produitapi.service;
 import com.example.produitapi.config.jwt.JwtTokenProvider;
 import com.example.produitapi.mapper.UserMapper;
 import com.example.produitapi.models.dto.UserDTO;
-import com.example.produitapi.models.entity.Role;
+import com.example.produitapi.models.entity.RoleUser;
 import com.example.produitapi.models.entity.User;
 import com.example.produitapi.models.form.UserLoginForm;
 import com.example.produitapi.models.form.UserRegisterForm;
 import com.example.produitapi.repository.RoleRepository;
+import com.example.produitapi.repository.RoleUserRepository;
 import com.example.produitapi.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +16,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -27,14 +29,16 @@ public class SessionService {
     private final PasswordEncoder encoder;
     private final JwtTokenProvider tokenProvider;
     private final RoleRepository roleRepository;
+    private final RoleUserRepository roleUserRepository;
 
-    public SessionService(AuthenticationManager authManager, UserRepository repository, UserMapper mapper, PasswordEncoder encoder, JwtTokenProvider tokenProvider, RoleRepository roleRepository) {
+    public SessionService(AuthenticationManager authManager, UserRepository repository, UserMapper mapper, PasswordEncoder encoder, JwtTokenProvider tokenProvider, RoleRepository roleRepository, RoleUserRepository roleUserRepository) {
         this.authManager = authManager;
         this.repository = repository;
         this.mapper = mapper;
         this.encoder = encoder;
         this.tokenProvider = tokenProvider;
         this.roleRepository = roleRepository;
+        this.roleUserRepository = roleUserRepository;
     }
 
     public UserDTO signIn(UserLoginForm form){
@@ -56,14 +60,20 @@ public class SessionService {
         user.setUsername(form.getUsername());
         user.setPassword(encoder.encode(form.getPassword()));
 
-        user.setRoles( List.of( roleRepository.findByNom("USER").orElseThrow() ) );
+
+        user.setEmail("email"); // TODO adapter
+        user.setMoyenPayement("visa");
 
         user.setAccountNonExpired(true);
         user.setAccountNonLocked(true);
         user.setCredentialNonExpired(true);
         user.setEnabled(true);
 
-        UserDTO rslt = mapper.toDto( repository.save(user) );
+        user = repository.save(user);
+        roleUserRepository.save( new RoleUser(0 ,roleRepository.findByNom("USER").orElseThrow() ,user , LocalDateTime.now(), null) );
+
+        UserDTO rslt = mapper.toDto( user );
+        rslt.getRoles().add("USER");
         rslt.setToken( tokenProvider.createToken(rslt.getUsername(), rslt.getRoles()) );
 
         return rslt;

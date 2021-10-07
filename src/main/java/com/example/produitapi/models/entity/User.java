@@ -9,6 +9,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,18 +29,66 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<Role> roles;
+    @Column(nullable = false)
+    private String email;
+    @Column(nullable = false)
+    private String moyenPayement;
 
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "adresse_id", nullable = false)
+    private Adresse adresse;
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Commande> commandes;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<RoleUser> roleUsers;
+
+    @ManyToMany
+    @JoinTable(name = "user_groups",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "groups_id"))
+    private List<Groupe> groups;
+
+
+
+    @Column(nullable = false)
     private boolean accountNonExpired;
+    @Column(nullable = false)
     private boolean accountNonLocked;
+    @Column(nullable = false)
     private boolean credentialNonExpired;
+    @Column(nullable = false)
     private boolean enabled;
+
+
+
+
+    public List<Role> getRoles(){
+        List<Role> groupRoles = groups.stream()
+                .flatMap(group -> group.getRoles().stream())
+                .collect(Collectors.toList());
+
+        List<Role> directRoles = roleUsers.stream()
+                .filter(roleUser -> roleUser.getDateFin() == null || roleUser.getDateFin().isAfter(LocalDateTime.now()))
+                .map(RoleUser::getRole)
+                .collect(Collectors.toList());
+
+        List<Role> allRoles = new ArrayList<>(groupRoles);
+        allRoles.addAll(directRoles);
+
+
+        return allRoles.stream()
+                .distinct()
+                .collect(Collectors.toList());
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles
+
+        return getRoles()
                 .stream()
+                .distinct()
                 .map((role) -> new SimpleGrantedAuthority(role.getNom()))
                 .collect(Collectors.toList());
     }

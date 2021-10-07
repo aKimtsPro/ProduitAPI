@@ -6,28 +6,30 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "cmd_ligne")
+@Table(name = "role_user")
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommandeLigne {
+public class RoleUser {
 
     @Id
     @GeneratedValue
     private long id;
+    
+    @ManyToOne
+    private Role role;
+
+    @ManyToOne
+    private User user;
 
     @Column(nullable = false)
-    private int qtt;
+    private LocalDateTime dateDebut;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Commande commande;
+    private LocalDateTime dateFin;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Produit produit;
 
 
 }

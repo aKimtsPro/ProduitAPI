@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "produit")
@@ -21,7 +22,9 @@ public class Produit {
     @Column(nullable = false)
     private String nom;
 
-
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "type_produit_id", nullable = false)
+    private TypeProduit typeProduit;
 
 
 }

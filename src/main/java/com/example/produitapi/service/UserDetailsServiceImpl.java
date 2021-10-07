@@ -90,7 +90,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
 
         u.setUsername( form.getUsername() );
         u.setPassword( encoder.encode(form.getPassword()) );
-        u.setRoles( roleRepository.findAllByNomIsIn(form.getRoles()) );
+        u.setRoleUsers( roleRepository.findAllByNomIsIn(form.getRoles()) );
 
         return mapper.toDto( repository.save(u) );
 

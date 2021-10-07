@@ -28,8 +28,7 @@ public class UserMapper implements Mapper<UserDTO, UserInsertForm, User> {
                 .id(entity.getId())
                 .username(entity.getUsername())
                 .roles(
-                        entity.getRoles()
-                                .stream()
+                        entity.getRoles().stream()
                                 .map(Role::getNom)
                                 .collect(Collectors.toList())
                 )
@@ -53,8 +52,8 @@ public class UserMapper implements Mapper<UserDTO, UserInsertForm, User> {
         User user = new User();
         user.setUsername( form.getUsername() );
         user.setPassword( form.getPassword() );
-
-        user.setRoles( roleRepository.findAllByNomIsIn(form.getRoles()) );
+        user.setEmail("email"); // TODO adaption
+        user.setMoyenPayement("visa");
 
         return user;
     }
