@@ -1,7 +1,7 @@
 package com.example.produitapi.controller;
 
 import com.example.produitapi.models.dto.UserDTO;
-import com.example.produitapi.models.form.UserInsertForm;
+import com.example.produitapi.models.form.user.UserForm;
 import com.example.produitapi.service.UserDetailsServiceImpl;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +19,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDTO insert(@RequestBody UserInsertForm form){
+    public UserDTO insert(@RequestBody UserForm form){
         return service.insert(form);
     }
 

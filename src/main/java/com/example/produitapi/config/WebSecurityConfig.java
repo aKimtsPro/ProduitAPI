@@ -50,6 +50,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // securisation des points d'entrée
         http.authorizeRequests()
+                .antMatchers("/test/admin").hasAuthority("ADMIN")
+                .antMatchers("/test/user").hasAuthority("USER")
+                .antMatchers("/test/auth").authenticated()
                 .anyRequest().permitAll();
 
         // pour h2

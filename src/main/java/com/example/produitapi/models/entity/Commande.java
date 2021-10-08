@@ -19,8 +19,8 @@ public class Commande {
     @Id
     @GeneratedValue
     private Long id;
+    private LocalDateTime dateConfirmation;
     private LocalDateTime dateLivraison;
-
 
     @ManyToOne
     @JoinColumn(name = "adresse_id")

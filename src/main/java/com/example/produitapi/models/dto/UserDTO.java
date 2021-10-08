@@ -13,6 +13,10 @@ public class UserDTO {
     private Long id;
     private String  username;
 
+    private String email;
+    private String moyenPayement;
+    private AdresseDTO adresse;
+
     private String token;
 
     private List<String> roles;

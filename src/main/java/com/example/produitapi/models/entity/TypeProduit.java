@@ -16,9 +16,9 @@ import javax.persistence.*;
 public class TypeProduit {
 
     @Id
-    @GeneratedValue
-    private Long id;
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @Column(nullable = false, unique = true)
     private String nom;
     @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
     private Double prix;

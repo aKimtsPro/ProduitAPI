@@ -1,12 +1,12 @@
 package com.example.produitapi.service;
 
 import com.example.produitapi.config.jwt.JwtTokenProvider;
-import com.example.produitapi.mapper.UserMapper;
+import com.example.produitapi.mapper.impl.UserMapper;
 import com.example.produitapi.models.dto.UserDTO;
 import com.example.produitapi.models.entity.RoleUser;
 import com.example.produitapi.models.entity.User;
-import com.example.produitapi.models.form.UserLoginForm;
-import com.example.produitapi.models.form.UserRegisterForm;
+import com.example.produitapi.models.form.user.UserLoginForm;
+import com.example.produitapi.models.form.user.UserRegisterForm;
 import com.example.produitapi.repository.RoleRepository;
 import com.example.produitapi.repository.RoleUserRepository;
 import com.example.produitapi.repository.UserRepository;
@@ -17,11 +17,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-public class SessionService {
+public class SessionServiceImpl {
 
     private final AuthenticationManager authManager;
     private final UserRepository repository;
@@ -31,7 +30,7 @@ public class SessionService {
     private final RoleRepository roleRepository;
     private final RoleUserRepository roleUserRepository;
 
-    public SessionService(AuthenticationManager authManager, UserRepository repository, UserMapper mapper, PasswordEncoder encoder, JwtTokenProvider tokenProvider, RoleRepository roleRepository, RoleUserRepository roleUserRepository) {
+    public SessionServiceImpl(AuthenticationManager authManager, UserRepository repository, UserMapper mapper, PasswordEncoder encoder, JwtTokenProvider tokenProvider, RoleRepository roleRepository, RoleUserRepository roleUserRepository) {
         this.authManager = authManager;
         this.repository = repository;
         this.mapper = mapper;

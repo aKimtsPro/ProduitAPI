@@ -4,6 +4,7 @@ import com.example.produitapi.models.entity.Adresse;
 import com.example.produitapi.models.entity.Role;
 import com.example.produitapi.models.entity.RoleUser;
 import com.example.produitapi.models.entity.User;
+import com.example.produitapi.repository.AdresseRepository;
 import com.example.produitapi.repository.RoleRepository;
 import com.example.produitapi.repository.RoleUserRepository;
 import com.example.produitapi.repository.UserRepository;
@@ -20,12 +21,14 @@ public class DatabaseFiller implements InitializingBean {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final RoleUserRepository roleUserRepository;
+    private final AdresseRepository adresseRepository;
     private final PasswordEncoder encoder;
 
-    public DatabaseFiller(RoleRepository roleRepository, UserRepository userRepository, RoleUserRepository roleUserRepository, PasswordEncoder encoder) {
+    public DatabaseFiller(RoleRepository roleRepository, UserRepository userRepository, RoleUserRepository roleUserRepository, AdresseRepository adresseRepository, PasswordEncoder encoder) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.roleUserRepository = roleUserRepository;
+        this.adresseRepository = adresseRepository;
         this.encoder = encoder;
     }
 
@@ -37,7 +40,11 @@ public class DatabaseFiller implements InitializingBean {
         Role user = new Role();
         user.setNom("USER");
 
-        roleRepository.saveAll(List.of(admin, user));
+        admin = roleRepository.save(admin);
+        user = roleRepository.save(user);
+
+        Adresse adresse = new Adresse(0L, "rue de Bruxelles", "namur", 10, 5500, "Belgique");
+        adresse = adresseRepository.save(adresse);
 
         User adminUser = new User(
                 0L,
@@ -45,7 +52,7 @@ public class DatabaseFiller implements InitializingBean {
                 encoder.encode("pass"),
                 "email",
                 "visa",
-                new Adresse(0L, "", "", 6, 6, ""),
+                adresse,
                 null,
                 null,
                 null,
@@ -53,14 +60,13 @@ public class DatabaseFiller implements InitializingBean {
                 true,
                 true,
                 true);
-
         User userUser = new User(
                 0L,
                 "user",
                 encoder.encode("pass"),
                 "email",
                 "visa",
-                new Adresse(0L, "", "", 6, 6, ""),
+                adresse,
                 null,
                 null,
                 null,
@@ -69,9 +75,8 @@ public class DatabaseFiller implements InitializingBean {
                 true,
                 true);
 
-        userRepository.saveAll(
-                List.of(adminUser, userUser)
-        );
+       adminUser = userRepository.save(adminUser);
+       userUser = userRepository.save(userUser);
 
         List<RoleUser> adminRoles = List.of(
                 new RoleUser(0L, admin, adminUser, LocalDateTime.now(), null),

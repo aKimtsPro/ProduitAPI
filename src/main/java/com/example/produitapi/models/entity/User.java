@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,6 +47,7 @@ public class User implements UserDetails {
     private List<RoleUser> roleUsers;
 
     @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "user_groups",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "groups_id"))
@@ -88,7 +91,6 @@ public class User implements UserDetails {
 
         return getRoles()
                 .stream()
-                .distinct()
                 .map((role) -> new SimpleGrantedAuthority(role.getNom()))
                 .collect(Collectors.toList());
     }
