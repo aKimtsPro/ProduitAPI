@@ -4,6 +4,7 @@ import com.example.produitapi.config.jwt.JwtAuthFilter;
 import com.example.produitapi.config.jwt.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,17 +26,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.tokenProvider = tokenProvider;
     }
 
-//    private final UserDetailsService userDetailsService;
-//
-//    public WebSecurityConfig(UserDetailsService userDetailsService) {
-//        this.userDetailsService = userDetailsService;
-//    }
-
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService);
-//    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // desactivation de la gestion de CSRF
@@ -50,9 +40,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // securisation des points d'entrée
         http.authorizeRequests()
+                // Test Security
                 .antMatchers("/test/admin").hasAuthority("ADMIN")
                 .antMatchers("/test/user").hasAuthority("USER")
                 .antMatchers("/test/auth").authenticated()
+//                // Produit
+//                .antMatchers(HttpMethod.POST,"/produit/**").hasAuthority("ADMIN")
+//                .antMatchers(HttpMethod.PUT,"/produit/**").hasAuthority("ADMIN")
+//                .antMatchers(HttpMethod.DELETE,"/produit/**").hasAuthority("ADMIN")
+//                .antMatchers(HttpMethod.GET,"/produit/**").authenticated()
+//                // Commande
+//                .antMatchers(HttpMethod.POST, "/commande/**").hasAnyAuthority("ADMIN", "USER")
                 .anyRequest().permitAll();
 
         // pour h2

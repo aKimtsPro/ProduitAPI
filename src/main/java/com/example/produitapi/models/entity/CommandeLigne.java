@@ -19,7 +19,7 @@ public class CommandeLigne {
     private long id;
 
     @Column(nullable = false)
-    private int qtt;
+    private long qtt;
 
     @ManyToOne
     @JoinColumn(nullable = false)

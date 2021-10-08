@@ -9,24 +9,24 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 
-@Slf4j
 @ControllerAdvice
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
-    public ResponseEntity<ErrorDTO> handle(Throwable ex, HttpServletRequest request){
+    public ResponseEntity<ErrorDTO> handle(Throwable ex, HttpServletRequest request){ // TODO : Quid de la requete?
+
+        AdviserHandled adviserHandled = ex.getClass().getAnnotation(AdviserHandled.class);
+        if( adviserHandled != null )
+            return ResponseEntity
+                    .status(adviserHandled.value())
+                    .body(ErrorDTO.of(ex));
 
         if( ex.getMessage() != null ){
-            if(ex instanceof ElementAlreadyExistsException){
-                log.debug(ex.getClass().getSimpleName());
+            if(ex instanceof IllegalArgumentException){
                 return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST) // 400
-                        .body(ErrorDTO.of(ex));
-            }
-            if(ex instanceof ElementNotFoundException){
-                return ResponseEntity
-                        .status(HttpStatus.NOT_FOUND) // 404
+                        .status(HttpStatus.BAD_REQUEST)
                         .body(ErrorDTO.of(ex));
             }
         }

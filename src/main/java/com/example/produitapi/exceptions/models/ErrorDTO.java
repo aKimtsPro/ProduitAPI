@@ -1,9 +1,11 @@
 package com.example.produitapi.exceptions.models;
 
+import com.example.produitapi.exceptions.AdviserHandled;
+import com.example.produitapi.exceptions.SkippedProperty;
+
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.Arrays;
@@ -26,12 +28,20 @@ public class ErrorDTO extends HashMap<String, Object> {
     }
 
     public static ErrorDTO of(Throwable ex){
+        AdviserHandled annotation= ex.getClass().getAnnotation(AdviserHandled.class);
+        if( annotation != null )
+            return ErrorDTO.of(ex, annotation.skipFrom());
+
+        return ErrorDTO.of(ex, RuntimeException.class);
+    }
+
+    public static ErrorDTO of(Throwable ex, Class<? extends Throwable> skipFrom){
 
         Map<String, Object> info = new HashMap<>();
 
         try{
             PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(ex.getClass()).getPropertyDescriptors();
-            List<String> toSkip = getSkippedProp(RuntimeException.class);
+            List<String> toSkip = getSkippedPropertiesName(skipFrom);
             for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
 
                 boolean isSkipped = false;
@@ -44,8 +54,16 @@ public class ErrorDTO extends HashMap<String, Object> {
 
                 if( !isSkipped ){
                     try {
-                        info.put(propertyDescriptor.getName(), propertyDescriptor.getReadMethod().invoke(ex));
-                    }catch (InvocationTargetException | IllegalAccessException ignored){}
+                        boolean skippedPropertyFromField = ex.getClass().getField( propertyDescriptor.getName() )
+                                .getAnnotation( SkippedProperty.class ) == null;
+                        boolean skippedPropertyFromMethod = propertyDescriptor.getReadMethod()
+                                .getAnnotation( SkippedProperty.class ) == null;
+
+                        // if neither the field nor the getter method is annotated with @SkippedProperty, include in the ErrorDTO
+                        if( !skippedPropertyFromField || !skippedPropertyFromMethod )
+                            info.put(propertyDescriptor.getName(), propertyDescriptor.getReadMethod().invoke( ex ));
+
+                    }catch (InvocationTargetException | IllegalAccessException | NoSuchFieldException ignored){}
                 }
             }
 
@@ -54,7 +72,7 @@ public class ErrorDTO extends HashMap<String, Object> {
         return new ErrorDTO(ex.getMessage(), info);
     }
 
-    public static List<String> getSkippedProp(Class<? extends Throwable> from) throws IntrospectionException {
+    public static List<String> getSkippedPropertiesName(Class<? extends Throwable> from) throws IntrospectionException {
         return Arrays.stream(Introspector.getBeanInfo(from).getPropertyDescriptors())
                 .map(PropertyDescriptor::getName)
                 .collect(Collectors.toList());

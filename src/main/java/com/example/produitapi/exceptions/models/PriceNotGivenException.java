@@ -1,5 +1,8 @@
 package com.example.produitapi.exceptions.models;
 
+import com.example.produitapi.exceptions.AdviserHandled;
+
+@AdviserHandled
 public class PriceNotGivenException extends RuntimeException{
 
     public PriceNotGivenException() {

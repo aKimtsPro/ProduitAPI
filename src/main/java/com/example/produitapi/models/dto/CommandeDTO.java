@@ -14,7 +14,6 @@ public class CommandeDTO {
     private List<CommandeLigneDTO> lignes;
     private SmallUserDTO realisePar;
     private AdresseDTO adresse;
-    private LocalDateTime dateConfirmation;
     private LocalDateTime dateLivraison;
 
 }

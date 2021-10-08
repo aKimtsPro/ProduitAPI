@@ -8,6 +8,6 @@ import lombok.Data;
 public class CommandeLigneDTO {
 
     private ProduitDTO produit;
-    private int qtt;
+    private long qtt;
 
 }

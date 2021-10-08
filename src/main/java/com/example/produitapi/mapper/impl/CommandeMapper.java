@@ -36,7 +36,6 @@ public class CommandeMapper implements Mapper<CommandeDTO, CommandeForm, Command
                 .id(entity.getId())
                 .adresse(adresseMapper.toDto(entity.getAdresse()))
                 .dateLivraison(entity.getDateLivraison())
-                .dateConfirmation(entity.getDateConfirmation())
                 .realisePar( userMapper.toSmallDTO(entity.getUser()) )
                 .lignes(
                         entity.getCommandeLignes()

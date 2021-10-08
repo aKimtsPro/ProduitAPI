@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,7 +20,6 @@ public class Commande {
     @Id
     @GeneratedValue
     private Long id;
-    private LocalDateTime dateConfirmation;
     private LocalDateTime dateLivraison;
 
     @ManyToOne
@@ -31,6 +31,6 @@ public class Commande {
     private User user;
 
     @OneToMany(mappedBy = "commande", orphanRemoval = true)
-    private List<CommandeLigne> commandeLignes;
+    private List<CommandeLigne> commandeLignes = new ArrayList<>();
 
 }
