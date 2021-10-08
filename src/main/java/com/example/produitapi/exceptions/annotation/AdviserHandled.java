@@ -1,5 +1,6 @@
-package com.example.produitapi.exceptions;
+package com.example.produitapi.exceptions.annotation;
 
+import com.example.produitapi.exceptions.ControllerExceptionHandler;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.http.HttpStatus;
 

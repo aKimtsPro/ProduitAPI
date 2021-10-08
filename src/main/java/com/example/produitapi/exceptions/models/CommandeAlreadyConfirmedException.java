@@ -1,6 +1,6 @@
 package com.example.produitapi.exceptions.models;
 
-import com.example.produitapi.exceptions.AdviserHandled;
+import com.example.produitapi.exceptions.annotation.AdviserHandled;
 
 import java.time.LocalDateTime;
 

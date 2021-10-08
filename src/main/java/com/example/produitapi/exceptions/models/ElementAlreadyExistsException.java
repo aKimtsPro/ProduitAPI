@@ -1,7 +1,7 @@
 package com.example.produitapi.exceptions.models;
 
-import com.example.produitapi.exceptions.AdviserHandled;
-import com.example.produitapi.exceptions.SkippedProperty;
+import com.example.produitapi.exceptions.annotation.AdviserHandled;
+import com.example.produitapi.exceptions.annotation.SkippedProperty;
 
 @AdviserHandled
 public class ElementAlreadyExistsException extends RuntimeException{

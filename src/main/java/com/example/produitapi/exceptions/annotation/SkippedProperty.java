@@ -1,4 +1,4 @@
-package com.example.produitapi.exceptions;
+package com.example.produitapi.exceptions.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
