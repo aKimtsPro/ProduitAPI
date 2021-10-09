@@ -55,9 +55,9 @@ public class ErrorDTO extends HashMap<String, Object> {
                 if( !isSkipped ){
                     try {
                         boolean skippedPropertyFromField = ex.getClass().getField( propertyDescriptor.getName() )
-                                .getAnnotation( SkippedProperty.class ) == null;
+                                .isAnnotationPresent( SkippedProperty.class );
                         boolean skippedPropertyFromMethod = propertyDescriptor.getReadMethod()
-                                .getAnnotation( SkippedProperty.class ) == null;
+                                .isAnnotationPresent( SkippedProperty.class );
 
                         // if neither the field nor the getter method is annotated with @SkippedProperty, include in the ErrorDTO
                         if( !skippedPropertyFromField || !skippedPropertyFromMethod )

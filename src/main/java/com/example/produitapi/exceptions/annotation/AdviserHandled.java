@@ -1,6 +1,5 @@
 package com.example.produitapi.exceptions.annotation;
 
-import com.example.produitapi.exceptions.ControllerExceptionHandler;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.http.HttpStatus;
 
@@ -10,11 +9,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Activates auto-handling by <code>ControllerExceptionHandler</code> for targeted <code>Throwable</code>
+ * Activates auto-handling by <code>ResponseEntityExceptionHandler</code> for targeted <code>Throwable</code>
  * <p>
  *
  * </p>
- * @see ControllerExceptionHandler
+ * @see com.example.produitapi.exceptions.ControllerAdviser
  * @see SkippedProperty
  * @author alexandre kimtsaris
  * @version 0.1
@@ -25,11 +24,11 @@ import java.lang.annotation.Target;
 public @interface AdviserHandled {
 
     @AliasFor("status")
-    public HttpStatus value() default HttpStatus.BAD_REQUEST;
+    HttpStatus value() default HttpStatus.BAD_REQUEST;
 
     @AliasFor("value")
-    public HttpStatus status() default HttpStatus.BAD_REQUEST;
+    HttpStatus status() default HttpStatus.BAD_REQUEST;
 
-    public Class<? extends Throwable> skipFrom() default RuntimeException.class;
+    Class<? extends Throwable> skipFrom() default RuntimeException.class;
 
 }
